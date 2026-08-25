@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}POS Activity Check — Analyse de suivi d'activité{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="text-center mb-4">
+            <h1 class="fw-bold">Suivi d'activité POS</h1>
+            <p class="text-muted fs-5">
+                Insérez un fichier de suivi d'activité de POS pour afficher les statistiques
+            </p>
+        </div>
+
+        <!-- Zone de dépôt drag-and-drop -->
+        <div id="dropzone"
+             class="dropzone mb-4 p-5 text-center rounded-3"
+             role="button"
+             tabindex="0"
+             aria-label="Zone de dépôt de fichier. Cliquez ou déposez un fichier ici."
+             aria-describedby="dropzone-help">
+            <i class="bi bi-cloud-arrow-up display-3 text-primary" aria-hidden="true"></i>
+            <p class="fs-5 mt-3 mb-1 fw-semibold">Glissez votre fichier ici</p>
+            <p id="dropzone-help" class="text-muted small mb-2">
+                ou cliquez pour parcourir &mdash; formats acceptés :
+                <span class="badge bg-secondary">.xlsx</span>
+                <span class="badge bg-secondary">.xls</span>
+                <span class="badge bg-secondary">.pdf</span>
+                <span class="badge bg-secondary">.csv</span>
+            </p>
+            <input type="file" id="file-input" class="d-none"
+                   accept=".xlsx,.xls,.pdf,.csv" aria-label="Sélectionner un fichier">
+        </div>
+
+        <!-- Fichier chargé -->
+        <div id="file-info" class="alert alert-info d-none align-items-center gap-2" role="status">
+            <i class="bi bi-file-earmark-check fs-4" aria-hidden="true"></i>
+            <span id="file-name" class="fw-semibold"></span>
+        </div>
+
+        <!-- Message d'erreur -->
+        <div id="error-message" class="alert alert-danger d-none align-items-center gap-2" role="alert">
+            <i class="bi bi-exclamation-triangle-fill fs-4" aria-hidden="true"></i>
+            <span id="error-text"></span>
+        </div>
+
+        <!-- Bouton démarrer l'analyse (caché par défaut) -->
+        <div class="text-center d-none" id="analyze-action">
+            <button type="button" id="btn-analyze" class="btn btn-primary btn-lg px-5 shadow-sm">
+                <i class="bi bi-play-fill me-2" aria-hidden="true"></i>Démarrer l'analyse
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}

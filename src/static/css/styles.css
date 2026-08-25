@@ -1,0 +1,59 @@
+/* POS Activity Check — styles professionnels */
+
+:root {
+    --pac-primary: #0d6efd;
+    --pac-primary-dark: #0a58ca;
+    --pac-dropzone-bg: #f5f7fa;
+    --pac-dropzone-border: #4a90e2;
+}
+
+body {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+    background-color: #fafbfc;
+}
+
+main {
+    flex: 1;
+}
+
+/* Zone de dépôt */
+.dropzone {
+    border: 2px dashed var(--pac-dropzone-border);
+    background-color: var(--pac-dropzone-bg);
+    cursor: pointer;
+    transition: border-color 0.2s ease, background-color 0.2s ease,
+        transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+.dropzone:hover,
+.dropzone:focus-visible {
+    border-color: var(--pac-primary-dark);
+    background-color: #eef3fa;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.1);
+    outline: none;
+}
+
+.dropzone.dragover {
+    border-style: solid;
+    border-color: var(--pac-primary-dark);
+    background-color: #e3edfb;
+    transform: scale(1.01);
+    box-shadow: 0 0.5rem 1rem rgba(13, 110, 253, 0.15);
+}
+
+/* Bouton d'analyse */
+#btn-analyze {
+    transition: transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+#btn-analyze:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 0.5rem 1rem rgba(13, 110, 253, 0.25);
+}
+
+#btn-analyze:disabled {
+    opacity: 0.65;
+    cursor: wait;
+}
