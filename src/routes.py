@@ -5,7 +5,7 @@ from flask import render_template, request, jsonify
 from werkzeug.utils import secure_filename
 
 from services.validator import get_file_extension, is_allowed_extension, exceeds_max_size
-from services.file_parser import parse_file
+from services.file_parser import parse_file, DependanceManquante
 from services.statistics import calculate_statistics
 from models.fichier_analyse import FichierAnalyse, SUPPORTED_FORMATS
 from models.statistiques_globales import StatistiquesGlobales
@@ -87,6 +87,10 @@ def register_routes(app):
             # Erreur métier lisible : format/contenu invalide
             logger.warning("Analyse refusée pour %s: %s", fichier.nom_fichier, exc)
             return jsonify({'error': str(exc)}), 422
+        except DependanceManquante as exc:
+            # Environnement serveur incomplet : guidage admin, pas la faute du fichier
+            logger.error("%s", exc)
+            return jsonify({'error': str(exc)}), 503
         except Exception as exc:  # noqa: BLE001 — erreur technique inattendue
             logger.exception("Erreur d'analyse pour %s", fichier.nom_fichier)
             return jsonify({'error': f"Erreur lors de l'analyse: {exc}"}), 500

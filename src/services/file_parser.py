@@ -5,6 +5,38 @@ import pandas as pd
 from services.statistics import _normaliser
 
 
+class DependanceManquante(Exception):
+    """Une bibliothèque de parsing n'est pas installée sur le serveur.
+
+    Distincte d'un fichier corrompu : le message guide l'administrateur
+    vers l'installation de la dépendance.
+    """
+
+    def __init__(self, paquet: str, module: str | None = None):
+        self.paquet = paquet
+        self.module = module or paquet
+        super().__init__(
+            f"Dépendance serveur manquante : '{paquet}'. "
+            f"Installez-la avec: pip install -r requirements.txt"
+        )
+
+
+# Paquets requis par format: module importable -> nom pip
+DEPENDANCES_REQUISES = {
+    'openpyxl': 'openpyxl',
+    'xlrd': 'xlrd',
+}
+
+
+def verifier_dependances() -> None:
+    """Échoue vite au démarrage si une dépendance de parsing manque."""
+    for module, paquet in DEPENDANCES_REQUISES.items():
+        try:
+            __import__(module)
+        except ImportError:
+            raise DependanceManquante(paquet, module)
+
+
 def parse_file(file, filename: str) -> pd.DataFrame:
     """Dispatche vers le bon parser selon l'extension du fichier."""
     extension = get_file_extension(filename)
@@ -35,6 +67,8 @@ def _normaliser_entetes(df: pd.DataFrame) -> pd.DataFrame:
 def parse_xlsx(file) -> pd.DataFrame:
     try:
         df = pd.read_excel(file, engine='openpyxl')
+    except ImportError as exc:
+        raise DependanceManquante('openpyxl') from exc
     except ValueError:
         raise
     except Exception as exc:  # noqa: BLE001 — fichier illisible/corrompu
@@ -45,6 +79,8 @@ def parse_xlsx(file) -> pd.DataFrame:
 def parse_xls(file) -> pd.DataFrame:
     try:
         df = pd.read_excel(file, engine='xlrd')
+    except ImportError as exc:
+        raise DependanceManquante('xlrd') from exc
     except Exception as exc:  # noqa: BLE001
         raise ValueError(f"Fichier .xls illisible ou corrompu: {exc}") from exc
     return _normaliser_entetes(df)
@@ -78,7 +114,7 @@ def parse_pdf(file):
         import tabula
         tables = tabula.read_pdf(file, pages='all', multiple_tables=True, silent=True)
     except ImportError as exc:
-        raise ValueError("L'extraction PDF nécessite tabula-py (et Java) sur le serveur") from exc
+        raise DependanceManquante('tabula-py', 'tabula') from exc
     except Exception as exc:  # noqa: BLE001 — PDF illisible / Java indisponible
         raise ValueError(f"Fichier PDF illisible ou corrompu: {exc}") from exc
     if not tables:

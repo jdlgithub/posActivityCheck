@@ -24,6 +24,10 @@ def setup_logging(app):
     app.logger.setLevel(logging.INFO)
 
 def create_app(config_name='default'):
+    # Échec rapide si une dépendance de parsing manque (12-Factor: fail fast)
+    from services.file_parser import verifier_dependances
+    verifier_dependances()
+
     app = Flask(__name__)
     app.config.from_object(config[config_name])
     
