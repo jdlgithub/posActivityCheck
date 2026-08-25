@@ -22,3 +22,7 @@ htmlcov/
 .DS_Store
 Thumbs.db
 *.swp
+
+# Process files
+.opencode
+.specify

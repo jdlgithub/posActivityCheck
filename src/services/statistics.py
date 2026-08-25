@@ -1,46 +1,73 @@
+import unicodedata
+
 import pandas as pd
 
+from models.statistiques_globales import StatistiquesGlobales
+
+
+def _normaliser(texte: str) -> str:
+    """Minuscules sans accents pour une détection de colonnes tolérante."""
+    texte = str(texte).strip().lower()
+    return ''.join(
+        c for c in unicodedata.normalize('NFD', texte)
+        if unicodedata.category(c) != 'Mn'
+    )
+
+
+# Noms de colonnes candidats (normalisés) pour chaque indicateur
+COLONNES_STATUT = ('status', 'statut', 'etat')
+COLONNES_CONFORMITE = ('conformite', 'conforme', 'conformity')
+
+MOTS_ATTENTE = ('attente', 'pending', 'en cours')
+MOTS_VALIDE = ('valide', 'valid')
+
+
+def _trouver_colonne(df: pd.DataFrame, candidats) -> str | None:
+    for colonne in df.columns:
+        if _normaliser(colonne) in candidats:
+            return colonne
+    return None
+
+
+def _taux_contenant(df: pd.DataFrame, colonne: str, mots_cles) -> float:
+    serie = df[colonne].dropna().astype(str).map(_normaliser)
+    if serie.empty:
+        return 0.0
+    total = len(df)
+    correspondances = serie.str.contains('|'.join(mots_cles), regex=True).sum()
+    return round((correspondances / total) * 100, 1)
+
+
+def _taux_conformite(df: pd.DataFrame) -> float:
+    colonne = _trouver_colonne(df, COLONNES_CONFORMITE)
+    if colonne is None:
+        return 0.0
+    serie = df[colonne].dropna().astype(str).map(_normaliser)
+    if serie.empty:
+        return 0.0
+    positifs = serie.isin(('oui', 'oui ', 'true', '1', 'yes', 'conforme')).sum()
+    return round((positifs / len(df)) * 100, 1)
+
+
 def calculate_statistics(data: pd.DataFrame) -> dict:
-    if data.empty:
-        return {
-            'taux_pos_attente': 0.0,
-            'taux_pos_valides': 0.0,
-            'taux_pos_conformes': 0.0,
-            'taux_agents_performants': 0.0
-        }
-    
-    total = len(data)
-    
-    return {
-        'taux_pos_attente': calculate_pos_pending(data, total),
-        'taux_pos_valides': calculate_pos_valid(data, total),
-        'taux_pos_conformes': calculate_pos_conformant(data, total),
-        'taux_agents_performants': calculate_agents_performants(data, total)
-    }
+    """Calcule les 4 taux globaux à partir des données extraites du fichier.
 
-def calculate_pos_pending(data: pd.DataFrame, total: int) -> float:
-    if 'status' in data.columns:
-        pending = data['status'].str.contains('attente|en attente|en cours', case=False, na=False).sum()
-        return round((pending / total) * 100, 1)
-    return 0.0
+    Retourne un dict compatible avec StatistiquesGlobales.from_dict().
+    """
+    if data is None or data.empty:
+        return StatistiquesGlobales().to_dict()
 
-def calculate_pos_valid(data: pd.DataFrame, total: int) -> float:
-    if 'status' in data.columns:
-        valid = data['status'].str.contains('valid|validé|valide', case=False, na=False).sum()
-        return round((valid / total) * 100, 1)
-    return 0.0
+    colonne_statut = _trouver_colonne(data, COLONNES_STATUT)
 
-def calculate_pos_conformant(data: pd.DataFrame, total: int) -> float:
-    if 'conformite' in data.columns:
-        conformant = data['conformite'].str.contains('conforme', case=False, na=False).sum()
-        return round((conformant / total) * 100, 1)
-    elif 'conforme' in data.columns:
-        conformant = data['conforme'].astype(str).str.contains('oui|true|1', case=False, na=False).sum()
-        return round((conformant / total) * 100, 1)
-    return 0.0
-
-def calculate_agents_performants(data: pd.DataFrame, total: int) -> float:
-    if 'agent_performance' in data.columns:
-        performant = data['agent_performance'].astype(str).str.contains('bon|bien|good', case=False, na=False).sum()
-        return round((performant / total) * 100, 1)
-    return 0.0
+    stats = StatistiquesGlobales(
+        taux_pos_attente=(
+            _taux_contenant(data, colonne_statut, MOTS_ATTENTE)
+            if colonne_statut else 0.0
+        ),
+        taux_pos_valides=(
+            _taux_contenant(data, colonne_statut, MOTS_VALIDE)
+            if colonne_statut else 0.0
+        ),
+        taux_pos_conformes=_taux_conformite(data),
+    )
+    return stats.to_dict()

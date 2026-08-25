@@ -79,21 +79,21 @@
 
 ### Tests for User Story 2 (OPTIONAL)
 
-- [ ] T020 [P] [US2] Unit test for statistics service in tests/unit/test_statistics.py
-- [ ] T021 [P] [US2] Unit test for file parser in tests/unit/test_file_parser.py
+- [x] T020 [P] [US2] Unit test for statistics service in tests/unit/test_statistics.py
+- [x] T021 [P] [US2] Unit test for file parser in tests/unit/test_file_parser.py
 
 ### Implementation for User Story 2
 
-- [ ] T022 [P] [US2] Create StatistiquesGlobales entity in src/models/statistiques_globales.py
-- [ ] T023 [US2] Implement .xlsx parser in src/services/file_parser.py
-- [ ] T024 [US2] Implement .xls parser in src/services/file_parser.py
-- [ ] T025 [US2] Implement .csv parser in src/services/file_parser.py
-- [ ] T026 [US2] Implement .pdf parser in src/services/file_parser.py
-- [ ] T027 [US2] Implement statistics calculation in src/services/statistics.py
-- [ ] T028 [US2] Implement POST /analyze route in src/app.py
-- [ ] T029 [US2] Create results template in src/templates/results.html
-- [ ] T030 [US2] Add popup notification logic in src/static/js/app.js
-- [ ] T031 [US2] Add color thresholds logic in src/static/js/app.js
+- [x] T022 [P] [US2] Create StatistiquesGlobales entity in src/models/statistiques_globales.py
+- [x] T023 [US2] Implement .xlsx parser in src/services/file_parser.py
+- [x] T024 [US2] Implement .xls parser in src/services/file_parser.py
+- [x] T025 [US2] Implement .csv parser in src/services/file_parser.py
+- [x] T026 [US2] Implement .pdf parser in src/services/file_parser.py
+- [x] T027 [US2] Implement statistics calculation in src/services/statistics.py
+- [x] T028 [US2] Implement POST /analyze route in src/app.py
+- [x] T029 [US2] Create results template in src/templates/results.html
+- [x] T030 [US2] Add popup notification logic in src/static/js/app.js
+- [x] T031 [US2] Add color thresholds logic in src/static/js/app.js
 
 **Checkpoint**: At this point, User Stories 1 AND 2 should both work independently
 

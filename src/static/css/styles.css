@@ -57,3 +57,35 @@ main {
     opacity: 0.65;
     cursor: wait;
 }
+
+/* Cartes de statistiques — couleurs conditionnelles par seuil */
+.stat-card .stat-icon {
+    opacity: 0.55;
+}
+
+.stat-good {
+    border-color: #198754;
+}
+
+.stat-good .stat-value,
+.stat-good .stat-icon {
+    color: #198754;
+}
+
+.stat-warn {
+    border-color: #ffc107;
+}
+
+.stat-warn .stat-value,
+.stat-warn .stat-icon {
+    color: #997404;
+}
+
+.stat-bad {
+    border-color: #dc3545;
+}
+
+.stat-bad .stat-value,
+.stat-bad .stat-icon {
+    color: #dc3545;
+}

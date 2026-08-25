@@ -1,0 +1,42 @@
+{# Grille des statistiques globales — remplie dynamiquement par app.js #}
+<section id="results-section" class="d-none mt-4" aria-live="polite" aria-label="Statistiques globales">
+    <h2 class="h4 text-center mb-4 fw-semibold">Statistiques globales du fichier</h2>
+    <div class="row g-3 justify-content-center">
+        <div class="col-12 col-md-6 col-xl-3">
+            <div class="stat-card card h-100 shadow-sm border-start border-4">
+                <div class="card-body text-center">
+                    <i class="bi bi-hourglass-split fs-2 stat-icon" aria-hidden="true"></i>
+                    <p class="text-muted small mb-1">POS en attente de complétion</p>
+                    <p class="stat-value display-6 fw-bold mb-0" id="stat-attente">&mdash;</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 col-xl-3">
+            <div class="stat-card card h-100 shadow-sm border-start border-4">
+                <div class="card-body text-center">
+                    <i class="bi bi-check2-circle fs-2 stat-icon" aria-hidden="true"></i>
+                    <p class="text-muted small mb-1">POS valides</p>
+                    <p class="stat-value display-6 fw-bold mb-0" id="stat-valides">&mdash;</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 col-xl-3">
+            <div class="stat-card card h-100 shadow-sm border-start border-4">
+                <div class="card-body text-center">
+                    <i class="bi bi-patch-check fs-2 stat-icon" aria-hidden="true"></i>
+                    <p class="text-muted small mb-1">POS conformes</p>
+                    <p class="stat-value display-6 fw-bold mb-0" id="stat-conformes">&mdash;</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 col-xl-3">
+            <div class="stat-card card h-100 shadow-sm border-start border-4">
+                <div class="card-body text-center">
+                    <i class="bi bi-person-badge fs-2 stat-icon" aria-hidden="true"></i>
+                    <p class="text-muted small mb-1">Agents faisant le bon travail</p>
+                    <p class="stat-value display-6 fw-bold mb-0" id="stat-agents">&mdash;</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

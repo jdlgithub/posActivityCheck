@@ -8,6 +8,7 @@ from services.validator import get_file_extension, is_allowed_extension, exceeds
 from services.file_parser import parse_file
 from services.statistics import calculate_statistics
 from models.fichier_analyse import FichierAnalyse, SUPPORTED_FORMATS
+from models.statistiques_globales import StatistiquesGlobales
 
 logger = logging.getLogger('posactivity.routes')
 
@@ -80,12 +81,12 @@ def register_routes(app):
 
         try:
             data = parse_file(stream, fichier.nom_fichier)
-            stats = calculate_statistics(data)
+            stats = StatistiquesGlobales.from_dict(calculate_statistics(data))
         except Exception as exc:  # noqa: BLE001 — erreur renvoyée à l'utilisateur
             logger.exception("Erreur d'analyse pour %s", fichier.nom_fichier)
             return jsonify({'error': f"Erreur lors de l'analyse: {exc}"}), 500
 
-        return jsonify({'success': True, 'statistics': stats})
+        return jsonify({'success': True, 'statistics': stats.to_dict()})
 
     @app.route('/health')
     def health():
