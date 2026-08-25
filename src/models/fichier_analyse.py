@@ -44,6 +44,21 @@ class FichierAnalyse:
         ext = filename.rsplit('.', 1)[-1].lower() if '.' in filename else ''
         return cls(nom_fichier=filename, format=ext, taille_bytes=size_bytes)
 
+    def en_erreur(self, message: str) -> 'FichierAnalyse':
+        """Retourne une copie marquée en erreur (transition vers `erreur_format`)."""
+        return FichierAnalyse(
+            nom_fichier=self.nom_fichier,
+            format=self.format,
+            taille_bytes=self.taille_bytes,
+            id=self.id,
+            date_chargement=self.date_chargement,
+            erreur=message,
+        )
+
+    @property
+    def est_en_erreur(self) -> bool:
+        return self.erreur is not None
+
     def to_dict(self) -> dict:
         return {
             'id': self.id,

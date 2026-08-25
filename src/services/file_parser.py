@@ -69,12 +69,18 @@ def io_bytes(data: bytes):
 
 
 def parse_pdf(file):
-    """Extraction tabulaire d'un PDF via tabula-py (requiert Java)."""
+    """Extraction tabulaire d'un PDF via tabula-py (requiert Java).
+
+    Toute erreur technique est convertie en ValueError avec message
+    lisible par l'utilisateur (mappée en 422 côté route).
+    """
     try:
         import tabula
+        tables = tabula.read_pdf(file, pages='all', multiple_tables=True, silent=True)
     except ImportError as exc:
-        raise ValueError("L'extraction PDF nécessite tabula-py (et Java)") from exc
-    tables = tabula.read_pdf(file, pages='all', multiple_tables=True, silent=True)
+        raise ValueError("L'extraction PDF nécessite tabula-py (et Java) sur le serveur") from exc
+    except Exception as exc:  # noqa: BLE001 — PDF illisible / Java indisponible
+        raise ValueError(f"Fichier PDF illisible ou corrompu: {exc}") from exc
     if not tables:
         raise ValueError("Aucun tableau détecté dans le fichier PDF")
     df = pd.concat(tables, ignore_index=True)

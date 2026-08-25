@@ -33,10 +33,11 @@ def register_routes(app):
         extension = get_file_extension(filename)
 
         if not is_allowed_extension(extension):
+            formats_lisibles = ', '.join(f'.{f}' for f in sorted(SUPPORTED_FORMATS))
             return jsonify({
                 'error': (
                     f"Format non supporté ('.{extension}'). "
-                    f"Formats acceptés: {', '.join(sorted(SUPPORTED_FORMATS))}"
+                    f"Formats acceptés: {formats_lisibles}"
                 )
             }), 400
 
@@ -82,7 +83,11 @@ def register_routes(app):
         try:
             data = parse_file(stream, fichier.nom_fichier)
             stats = StatistiquesGlobales.from_dict(calculate_statistics(data))
-        except Exception as exc:  # noqa: BLE001 — erreur renvoyée à l'utilisateur
+        except ValueError as exc:
+            # Erreur métier lisible : format/contenu invalide
+            logger.warning("Analyse refusée pour %s: %s", fichier.nom_fichier, exc)
+            return jsonify({'error': str(exc)}), 422
+        except Exception as exc:  # noqa: BLE001 — erreur technique inattendue
             logger.exception("Erreur d'analyse pour %s", fichier.nom_fichier)
             return jsonify({'error': f"Erreur lors de l'analyse: {exc}"}), 500
 

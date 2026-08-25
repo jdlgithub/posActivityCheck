@@ -107,16 +107,16 @@
 
 ### Tests for User Story 3 (OPTIONAL)
 
-- [ ] T032 [P] [US3] Integration test for all formats in tests/integration/test_formats.py
-- [ ] T033 [P] [US3] Integration test for invalid format in tests/integration/test_errors.py
+- [x] T032 [P] [US3] Integration test for all formats in tests/integration/test_formats.py
+- [x] T033 [P] [US3] Integration test for invalid format in tests/integration/test_errors.py
 
 ### Implementation for User Story 3
 
-- [ ] T034 [US3] Add error state to ZoneDepot in src/models/fichier_analyse.py
-- [ ] T035 [US3] Implement error response handler in src/app.py
-- [ ] T036 [US3] Add error message UI in src/templates/index.html
-- [ ] T037 [US3] Add file size validation in src/services/validator.py
-- [ ] T038 [US3] Add user-friendly error messages in src/static/js/app.js
+- [x] T034 [US3] Add error state to ZoneDepot in src/models/fichier_analyse.py
+- [x] T035 [US3] Implement error response handler in src/app.py
+- [x] T036 [US3] Add error message UI in src/templates/index.html
+- [x] T037 [US3] Add file size validation in src/services/validator.py
+- [x] T038 [US3] Add user-friendly error messages in src/static/js/app.js
 
 **Checkpoint**: All supported formats work, invalid formats are rejected
 

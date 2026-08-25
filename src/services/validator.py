@@ -3,6 +3,9 @@ from typing import Set
 
 from models.fichier_analyse import SUPPORTED_FORMATS
 
+# Limite de taille des fichiers déposés (50 Mo)
+TAILLE_MAX_OCTETS = 50 * 1024 * 1024
+
 
 def get_file_extension(filename: str) -> str:
     """Extrait l'extension en minuscules d'un nom de fichier."""

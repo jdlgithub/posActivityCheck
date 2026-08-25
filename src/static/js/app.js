@@ -80,6 +80,20 @@
         document.getElementById('results-section').scrollIntoView({ behavior: 'smooth' });
     }
 
+    /* Messages d'erreur conviviaux selon le code HTTP (T038) */
+    function messageConvivial(statut, messageServeur) {
+        switch (statut) {
+            case 404:
+                return 'Fichier introuvable ou session expirée. Rechargez votre fichier.';
+            case 413:
+                return 'Fichier trop volumineux (max 50 Mo).';
+            case 422:
+                return messageServeur || "Le fichier n'a pas pu être analysé.";
+            default:
+                return messageServeur || 'Erreur inattendue du serveur. Réessayez.';
+        }
+    }
+
     /* Lancement de l'analyse */
     function lancerAnalyse() {
         if (!currentFileId) {
@@ -87,12 +101,14 @@
             return;
         }
         hideError();
+        var respStatus = 0;
         btnAnalyze.disabled = true;
         btnAnalyze.innerHTML =
             '<span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>Analyse en cours...';
 
         fetch('/analyze/' + encodeURIComponent(currentFileId), { method: 'POST' })
             .then(function (resp) {
+                respStatus = resp.status;
                 return resp.json().then(function (body) {
                     return { ok: resp.ok, body: body };
                 });
@@ -105,7 +121,7 @@
                     afficherStatistiques(result.body.statistics);
                     afficherPopupSucces();
                 } else {
-                    showError(result.body.error || "Erreur lors de l'analyse du fichier");
+                    showError(messageConvivial(respStatus, result.body.error));
                 }
             })
             .catch(function () {
@@ -140,6 +156,10 @@
         fileInfo.classList.add('d-none');
         analyzeAction.classList.add('d-none');
         hideError();
+        var resultats = document.getElementById('results-section');
+        if (resultats) {
+            resultats.classList.add('d-none');
+        }
     }
 
     /* Dépose un fichier : validation côté client puis envoi vers /upload */
